@@ -39,7 +39,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::factory(3)->create();
+        if (User::count() < 5) {
+            User::factory(max(0, 5 - User::count()))->create();
+        }
 
         // 2. Categorías (6 registros)
         $datosCategorias = [
@@ -75,7 +77,10 @@ class DatabaseSeeder extends Seeder
         }
 
         // 3. Instructores (25 registros)
-        $instructores = Instructor::factory(25)->create();
+        if (Instructor::count() < 25) {
+            Instructor::factory(max(0, 25 - Instructor::count()))->create();
+        }
+        $instructores = Instructor::all();
 
         // 4. Cursos (50 registros)
         $plantillasCursos = [
@@ -117,145 +122,105 @@ class DatabaseSeeder extends Seeder
         ];
 
         $cursos = collect();
-        foreach ($plantillasCursos as $p) {
-            $categoria = $categorias[$p['cat']] ?? $categorias->first();
-            $curso = Curso::create([
-                'categoria_id' => $categoria->id,
-                'titulo' => $p['titulo'],
-                'descripcion' => "Capacitación práctica orientada al mercado laboral en {$p['titulo']}. Aprende con casos reales.",
-                'precio' => $p['precio'],
-                'duracion_horas' => $p['horas'],
-                'imagen' => $p['img'],
-            ]);
-            $cursos->push($curso);
-        }
+        if (Curso::count() === 0) {
+            foreach ($plantillasCursos as $p) {
+                $categoria = $categorias[$p['cat']] ?? $categorias->first();
+                $curso = Curso::create([
+                    'categoria_id' => $categoria->id,
+                    'titulo' => $p['titulo'],
+                    'descripcion' => "Capacitación práctica orientada al mercado laboral en {$p['titulo']}. Aprende con casos reales.",
+                    'precio' => $p['precio'],
+                    'duracion_horas' => $p['horas'],
+                    'imagen' => $p['img'],
+                ]);
+                $cursos->push($curso);
+            }
 
-        // Completar hasta 50 cursos
-        $cursosRestantes = 50 - $cursos->count();
-        for ($i = 0; $i < $cursosRestantes; $i++) {
-            $cat = $categorias->random();
-            $c = Curso::create([
-                'categoria_id' => $cat->id,
-                'titulo' => "Taller Profesional en " . fake()->jobTitle(),
-                'descripcion' => fake()->paragraph(2),
-                'precio' => fake()->randomElement([140.00, 180.00, 220.00, 260.00]),
-                'duracion_horas' => fake()->randomElement([20, 30, 40, 50]),
-                'imagen' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
-            ]);
-            $cursos->push($c);
+            // Completar hasta 50 cursos
+            $cursosRestantes = 50 - $cursos->count();
+            for ($i = 0; $i < $cursosRestantes; $i++) {
+                $cat = $categorias->random();
+                $c = Curso::create([
+                    'categoria_id' => $cat->id,
+                    'titulo' => "Taller Profesional en " . fake()->jobTitle(),
+                    'descripcion' => fake()->paragraph(2),
+                    'precio' => fake()->randomElement([140.00, 180.00, 220.00, 260.00]),
+                    'duracion_horas' => fake()->randomElement([20, 30, 40, 50]),
+                    'imagen' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
+                ]);
+                $cursos->push($c);
+            }
         }
+        $cursos = Curso::all();
 
         // 5. Paralelos (100 registros)
         $paralelos = collect();
-        $aulas = ['Aula 101', 'Aula 102', 'Aula 201', 'Aula 202', 'Lab Cómputo 1', 'Lab Cómputo 2', 'Lab Multimedia', 'Aula Virtual A', 'Auditorio'];
-        $horariosPlantilla = [
-            ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '08:00:00', 'fin' => '10:00:00'],
-            ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '10:00:00', 'fin' => '12:00:00'],
-            ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '14:00:00', 'fin' => '16:00:00'],
-            ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '18:30:00', 'fin' => '20:30:00'],
-            ['dias' => 'Martes, Jueves', 'inicio' => '08:30:00', 'fin' => '11:30:00'],
-            ['dias' => 'Martes, Jueves', 'inicio' => '15:00:00', 'fin' => '18:00:00'],
-            ['dias' => 'Martes, Jueves', 'inicio' => '18:30:00', 'fin' => '21:30:00'],
-            ['dias' => 'Sábados', 'inicio' => '08:00:00', 'fin' => '13:00:00'],
-            ['dias' => 'Sábados', 'inicio' => '14:00:00', 'fin' => '19:00:00'],
-        ];
+        if (Paralelo::count() === 0) {
+            $aulas = ['Aula 101', 'Aula 102', 'Aula 201', 'Aula 202', 'Lab Cómputo 1', 'Lab Cómputo 2', 'Lab Multimedia', 'Aula Virtual A', 'Auditorio'];
+            $horariosPlantilla = [
+                ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '08:00:00', 'fin' => '10:00:00'],
+                ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '10:00:00', 'fin' => '12:00:00'],
+                ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '14:00:00', 'fin' => '16:00:00'],
+                ['dias' => 'Lunes, Miércoles, Viernes', 'inicio' => '18:30:00', 'fin' => '20:30:00'],
+                ['dias' => 'Martes, Jueves', 'inicio' => '08:30:00', 'fin' => '11:30:00'],
+                ['dias' => 'Martes, Jueves', 'inicio' => '15:00:00', 'fin' => '18:00:00'],
+                ['dias' => 'Martes, Jueves', 'inicio' => '18:30:00', 'fin' => '21:30:00'],
+                ['dias' => 'Sábados', 'inicio' => '08:00:00', 'fin' => '13:00:00'],
+                ['dias' => 'Sábados', 'inicio' => '14:00:00', 'fin' => '19:00:00'],
+            ];
 
-        $letrasParalelo = ['Paralelo A', 'Paralelo B', 'Paralelo C', 'Grupo Matutino', 'Grupo Nocturno'];
+            $letrasParalelo = ['Paralelo A', 'Paralelo B', 'Paralelo C', 'Grupo Matutino', 'Grupo Nocturno'];
 
-        foreach ($cursos as $indice => $curso) {
-            for ($p = 0; $p < 2; $p++) {
-                $sch = $horariosPlantilla[($indice + $p) % count($horariosPlantilla)];
-                $fechaInicio = Carbon::now()->subDays(rand(10, 45))->addDays(rand(0, 30));
-                $fechaFin = (clone $fechaInicio)->addWeeks(6);
+            foreach ($cursos as $indice => $curso) {
+                for ($p = 0; $p < 2; $p++) {
+                    $sch = $horariosPlantilla[($indice + $p) % count($horariosPlantilla)];
+                    $fechaInicio = Carbon::now()->subDays(rand(10, 45))->addDays(rand(0, 30));
+                    $fechaFin = (clone $fechaInicio)->addWeeks(6);
 
-                $paralelo = Paralelo::create([
-                    'curso_id' => $curso->id,
-                    'instructor_id' => $instructores->random()->id,
-                    'nombre' => $letrasParalelo[$p] ?? "Paralelo " . chr(65 + $p),
-                    'aula' => $aulas[($indice + $p) % count($aulas)],
-                    'dias' => $sch['dias'],
-                    'hora_inicio' => $sch['inicio'],
-                    'hora_fin' => $sch['fin'],
-                    'fecha_inicio' => $fechaInicio->format('Y-m-d'),
-                    'fecha_fin' => $fechaFin->format('Y-m-d'),
-                    'cupo_maximo' => rand(15, 25),
-                ]);
+                    $paralelo = Paralelo::create([
+                        'curso_id' => $curso->id,
+                        'instructor_id' => $instructores->random()->id,
+                        'nombre' => $letrasParalelo[$p] ?? "Paralelo " . chr(65 + $p),
+                        'aula' => $aulas[($indice + $p) % count($aulas)],
+                        'dias' => $sch['dias'],
+                        'hora_inicio' => $sch['inicio'],
+                        'hora_fin' => $sch['fin'],
+                        'fecha_inicio' => $fechaInicio->format('Y-m-d'),
+                        'fecha_fin' => $fechaFin->format('Y-m-d'),
+                        'cupo_maximo' => rand(15, 25),
+                    ]);
 
-                $paralelos->push($paralelo);
+                    $paralelos->push($paralelo);
+                }
             }
         }
+        $paralelos = Paralelo::all();
 
         // 6. Participantes (320 registros)
-        $participantes = Participante::factory(320)->create();
+        if (Participante::count() < 320) {
+            Participante::factory(max(0, 320 - Participante::count()))->create();
+        }
+        $participantes = Participante::all();
 
         // 7. Inscripciones (550 registros respetando cupo y sin horario cruzado)
-        $inscripcionesCreadas = 0;
-        $metaInscripciones = 550;
-        $listaParticipantes = $participantes->shuffle();
-        $listaParalelos = $paralelos->shuffle();
+        if (Inscripcion::count() === 0) {
+            $inscripcionesCreadas = 0;
+            $metaInscripciones = 550;
+            $listaParticipantes = $participantes->shuffle();
+            $listaParalelos = $paralelos->shuffle();
 
-        $paresInscritos = [];
+            $paresInscritos = [];
 
-        foreach ($listaParticipantes as $participante) {
-            if ($inscripcionesCreadas >= $metaInscripciones) {
-                break;
-            }
-
-            $cantidadCursos = rand(1, 3);
-            $paralelosAleatorios = $listaParalelos->shuffle();
-
-            foreach ($paralelosAleatorios as $paralelo) {
-                if ($cantidadCursos <= 0 || $inscripcionesCreadas >= $metaInscripciones) {
-                    break;
-                }
-
-                $clavePar = "{$participante->id}_{$paralelo->id}";
-                if (isset($paresInscritos[$clavePar])) {
-                    continue;
-                }
-
-                // Verificar cupo
-                $conteoActivos = Inscripcion::where('paralelo_id', $paralelo->id)
-                    ->where('estado', '!=', 'anulada')
-                    ->count();
-
-                if ($conteoActivos >= $paralelo->cupo_maximo) {
-                    continue;
-                }
-
-                // Verificar horario cruzado
-                $conflicto = $participante->buscarParaleloEnConflicto($paralelo);
-                if ($conflicto) {
-                    continue;
-                }
-
-                $azarEstado = rand(1, 100);
-                $estado = ($azarEstado <= 75) ? 'pagada' : (($azarEstado <= 90) ? 'pendiente' : 'anulada');
-                $monto = ($estado === 'anulada') ? 0.00 : (float) $paralelo->curso->precio;
-
-                Inscripcion::create([
-                    'participante_id' => $participante->id,
-                    'paralelo_id' => $paralelo->id,
-                    'fecha_inscripcion' => Carbon::now()->subDays(rand(1, 40))->format('Y-m-d'),
-                    'monto_pagado' => $monto,
-                    'estado' => $estado,
-                ]);
-
-                $paresInscritos[$clavePar] = true;
-                $inscripcionesCreadas++;
-                $cantidadCursos--;
-            }
-        }
-
-        // Si falta para 550, completar
-        if ($inscripcionesCreadas < $metaInscripciones) {
-            foreach ($participantes as $participante) {
+            foreach ($listaParticipantes as $participante) {
                 if ($inscripcionesCreadas >= $metaInscripciones) {
                     break;
                 }
 
-                foreach ($paralelos as $paralelo) {
-                    if ($inscripcionesCreadas >= $metaInscripciones) {
+                $cantidadCursos = rand(1, 3);
+                $paralelosAleatorios = $listaParalelos->shuffle();
+
+                foreach ($paralelosAleatorios as $paralelo) {
+                    if ($cantidadCursos <= 0 || $inscripcionesCreadas >= $metaInscripciones) {
                         break;
                     }
 
@@ -264,20 +229,71 @@ class DatabaseSeeder extends Seeder
                         continue;
                     }
 
-                    if ($paralelo->estaLleno() || $participante->buscarParaleloEnConflicto($paralelo)) {
+                    // Verificar cupo
+                    $conteoActivos = Inscripcion::where('paralelo_id', $paralelo->id)
+                        ->where('estado', '!=', 'anulada')
+                        ->count();
+
+                    if ($conteoActivos >= $paralelo->cupo_maximo) {
                         continue;
                     }
+
+                    // Verificar horario cruzado
+                    $conflicto = $participante->buscarParaleloEnConflicto($paralelo);
+                    if ($conflicto) {
+                        continue;
+                    }
+
+                    $azarEstado = rand(1, 100);
+                    $estado = ($azarEstado <= 75) ? 'pagada' : (($azarEstado <= 90) ? 'pendiente' : 'anulada');
+                    $monto = ($estado === 'anulada') ? 0.00 : (float) $paralelo->curso->precio;
 
                     Inscripcion::create([
                         'participante_id' => $participante->id,
                         'paralelo_id' => $paralelo->id,
-                        'fecha_inscripcion' => Carbon::now()->subDays(rand(1, 20))->format('Y-m-d'),
-                        'monto_pagado' => (float) $paralelo->curso->precio,
-                        'estado' => 'pagada',
+                        'fecha_inscripcion' => Carbon::now()->subDays(rand(1, 40))->format('Y-m-d'),
+                        'monto_pagado' => $monto,
+                        'estado' => $estado,
                     ]);
 
                     $paresInscritos[$clavePar] = true;
                     $inscripcionesCreadas++;
+                    $cantidadCursos--;
+                }
+            }
+
+            // Si falta para 550, completar
+            if ($inscripcionesCreadas < $metaInscripciones) {
+                foreach ($participantes as $participante) {
+                    if ($inscripcionesCreadas >= $metaInscripciones) {
+                        break;
+                    }
+
+                    foreach ($paralelos as $paralelo) {
+                        if ($inscripcionesCreadas >= $metaInscripciones) {
+                            break;
+                        }
+
+                        $clavePar = "{$participante->id}_{$paralelo->id}";
+                        if (isset($paresInscritos[$clavePar])) {
+                            continue;
+                        }
+
+                        if ($paralelo->estaLleno() || $participante->buscarParaleloEnConflicto($paralelo)) {
+                            continue;
+                        }
+
+                        Inscripcion::create([
+                            'participante_id' => $participante->id,
+                            'paralelo_id' => $paralelo->id,
+                            'fecha_inscripcion' => Carbon::now()->subDays(rand(1, 20))->format('Y-m-d'),
+                            'monto_pagado' => (float) $paralelo->curso->precio,
+                            'estado' => 'pagada',
+                        ]);
+
+                        $paresInscritos[$clavePar] = true;
+                        $inscripcionesCreadas++;
+                    }
                 }
             }
         }

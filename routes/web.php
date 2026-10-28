@@ -45,6 +45,10 @@ Route::middleware('auth')->group(function () {
         Route::get('cursos/{curso}/edit', [CursoController::class, 'edit'])->name('cursos.edit');
         Route::put('cursos/{curso}', [CursoController::class, 'update'])->name('cursos.update');
         Route::delete('cursos/{curso}', [CursoController::class, 'destroy'])->name('cursos.destroy');
+        Route::post('admin/ejecutar-seeders', function () {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            return back()->with('exito', '¡Datos de prueba y cursos cargados exitosamente!');
+        })->name('admin.ejecutar_seeders');
 
         // Paralelos (apertura, edición y eliminación)
         Route::get('paralelos/create', [ParaleloController::class, 'create'])->name('paralelos.create');

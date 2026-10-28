@@ -110,8 +110,23 @@
                 </div>
             </div>
         @empty
-            <div class="col-span-full bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 font-medium">
-                No se encontraron cursos que coincidan con la búsqueda.
+            <div class="col-span-full bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 font-medium space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+                <p class="text-base text-slate-600 font-semibold">No se encontraron cursos registrados en la base de datos.</p>
+                <p class="text-xs text-slate-400 max-w-md mx-auto">Como administrador, puedes poblar el sistema automáticamente con 50 cursos, 100 paralelos, 25 docentes y 320 alumnos de demostración.</p>
+                @can('admin')
+                <div class="pt-2">
+                    <form action="{{ route('admin.ejecutar_seeders') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center space-x-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <span>Poblar Base de Datos (Ejecutar Seeders)</span>
+                        </button>
+                    </form>
+                </div>
+                @endcan
             </div>
         @endforelse
     </div>
