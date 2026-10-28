@@ -29,4 +29,4 @@ databases:
     plan: free
     region: oregon
     databaseName: capacitacion_db
-    user: postgres
+
