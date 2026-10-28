@@ -10,9 +10,9 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: true
       - key: APP_KEY
-        generateValue: true
+        value: base64:2LL7QAgZ+CAmTZDp4UalyY3h74H5Ka3ErFDYh45enHQ=
       - key: DB_CONNECTION
         value: pgsql
       - key: DATABASE_URL
@@ -29,4 +29,3 @@ databases:
     plan: free
     region: oregon
     databaseName: capacitacion_db
-
