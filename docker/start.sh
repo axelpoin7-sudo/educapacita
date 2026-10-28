@@ -40,11 +40,11 @@ done
 # Ejecutar migraciones y seeders
 if [ "${RUN_MIGRATIONS}" = "true" ] || [ "${RUN_MIGRATIONS}" = "1" ]; then
     echo "===> Ejecutando migraciones de base de datos..."
-    php artisan migrate --force || true
+    php artisan migrate --force
 
     if [ "${RUN_SEEDER}" = "true" ] || [ "${RUN_SEEDER}" = "1" ]; then
         echo "===> Ejecutando seeders de datos iniciales..."
-        php artisan db:seed --force || true
+        php artisan db:seed --force || echo "===> Seeders ejecutados o ya existentes."
     fi
 fi
 
