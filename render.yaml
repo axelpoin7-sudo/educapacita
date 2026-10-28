@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: educapacita-web
+    runtime: docker
+    plan: free
+    region: oregon
+    envVars:
+      - key: APP_NAME
+        value: EduCapacita
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: educapacita-db
+          property: connectionString
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: RUN_SEEDER
+        value: "true"
+
+databases:
+  - name: educapacita-db
+    plan: free
+    region: oregon
+    databaseName: capacitacion_db
+    user: postgres
