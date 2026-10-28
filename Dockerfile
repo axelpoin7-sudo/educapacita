@@ -32,9 +32,10 @@ COPY . .
 # Instalar dependencias de producción de Composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Asignar permisos a storage y bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Asignar permisos a storage, bootstrap/cache y uploads públicos
+RUN mkdir -p /var/www/html/public/uploads/cursos /var/www/html/public/uploads/instructores \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
 
 # Copiar y dar permisos al script de arranque
 COPY docker/start.sh /usr/local/bin/start.sh

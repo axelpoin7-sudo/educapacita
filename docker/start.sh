@@ -53,9 +53,10 @@ php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true
 
-# Asignar permisos estrictos de www-data a todo storage y cache
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Asegurar carpetas de uploads y permisos de www-data
+mkdir -p /var/www/html/public/uploads/cursos /var/www/html/public/uploads/instructores
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/uploads
 
 echo "===> Servidor web Apache iniciado exitosamente en puerto ${PORT}"
 exec apache2-foreground

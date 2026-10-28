@@ -49,7 +49,7 @@ class CursoController extends Controller
             $rutaDestino = public_path('uploads/cursos');
 
             if (! File::isDirectory($rutaDestino)) {
-                File::makeDirectory($rutaDestino, 0755, true, true);
+                File::makeDirectory($rutaDestino, 0775, true, true);
             }
 
             $archivo->move($rutaDestino, $nombreArchivo);
@@ -86,7 +86,7 @@ class CursoController extends Controller
             $rutaDestino = public_path('uploads/cursos');
 
             if (! File::isDirectory($rutaDestino)) {
-                File::makeDirectory($rutaDestino, 0755, true, true);
+                File::makeDirectory($rutaDestino, 0775, true, true);
             }
 
             if ($curso->imagen && File::exists(public_path($curso->imagen))) {

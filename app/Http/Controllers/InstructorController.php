@@ -30,7 +30,7 @@ class InstructorController extends Controller
             $rutaDestino = public_path('uploads/instructores');
 
             if (! File::isDirectory($rutaDestino)) {
-                File::makeDirectory($rutaDestino, 0755, true, true);
+                File::makeDirectory($rutaDestino, 0775, true, true);
             }
 
             $archivo->move($rutaDestino, $nombreArchivo);
@@ -65,7 +65,7 @@ class InstructorController extends Controller
             $rutaDestino = public_path('uploads/instructores');
 
             if (! File::isDirectory($rutaDestino)) {
-                File::makeDirectory($rutaDestino, 0755, true, true);
+                File::makeDirectory($rutaDestino, 0775, true, true);
             }
 
             if ($instructor->foto && File::exists(public_path($instructor->foto))) {
